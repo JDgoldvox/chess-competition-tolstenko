@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 23)
 # set the output directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_ARCHsIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(FETCHCONTENT_QUIET FALSE)
 include(cmake/get_cpm.cmake)
@@ -125,7 +125,11 @@ endif() # NOT CHESS_VALIDATOR_ONLY
 
 # chess library
 file(GLOB_RECURSE CHESS_BOT_FILES CONFIGURE_DEPENDS "chess-bot/*.cpp" "chess-bot/*.h")
-add_library(chessbot STATIC ${CHESS_BOT_FILES})
+add_library(chessbot STATIC ${CHESS_BOT_FILES}
+        chess-bot/BoardScore.cpp
+        chess-bot/BoardScore.h
+        chess-bot/UCT.cpp
+        chess-bot/UCT.h)
 set_target_properties(chessbot PROPERTIES LINKER_LANGUAGE CXX)
 include_directories(chess-bot)
 
