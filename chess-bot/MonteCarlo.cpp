@@ -2,9 +2,8 @@
 
 chess::Move MonteCarlo::Run(Movelist possibleMoves, int simulationsInput, Board board){
     simulations = simulationsInput;
-    root = new Node(possibleMoves);
+    root = new Node(possibleMoves, board);
 
-    cout << "HELLO WORLD";
     for(auto move : possibleMoves){
         chess::Board tempBoard = board;
 
@@ -32,10 +31,16 @@ chess::Move MonteCarlo::Run(Movelist possibleMoves, int simulationsInput, Board 
 
     }
 
+    //select
+
+    //expand
+    
+    //simulate
+
+    //propagate
+
     return possibleMoves[0];
     //return chess::Move();
-
-
 }
 
 /*
@@ -58,9 +63,8 @@ Node* MonteCarlo::Selection(Node* rootInput) {
             return rootInput;
         }
     }
-    else{
-        current = UCT::FindBestUCT(rootInput->children);
-    }
+
+    current = UCT::FindBestUCT(rootInput->children);
 
     //this is now not a root node
     while(true){
@@ -85,15 +89,12 @@ Node* MonteCarlo::Selection(Node* rootInput) {
 Node* MonteCarlo::Expansion(Node* parentNode) {
 
     // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
-    Node* newNode = new Node(parentNode->possibleMoves);
-    // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
-    // this don't work, how do I get all new possible moves???????
+    Node* newNode = new Node(parentNode->board, parentNode);
 
+    //set parent
+    newNode->parent = parentNode;
+
+    //set children
     parentNode->children.push_back(newNode);
 }
 
