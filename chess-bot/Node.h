@@ -18,45 +18,48 @@ public:
     Node(Board parentBoard, Node* parentNode){
 
         //choose random move from board legal moves
-        chess::Movelist currentLegalMoves;
-        currentLegalMoves = parentNode->possibleMoves;
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dist(0,  currentLegalMoves.size() - 1);
-        auto selectedMove = currentLegalMoves[dist(gen)];
-
-        //this returns index if found
-        int index = parentNode->possibleMoves.find(selectedMove);
-        currentLegalMoves[index].; // <--------- this does not have remove function implemented??
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
-        //Either we have to create a generic list and loop through all values or find way to remove using Chess::movelist
+        std::uniform_int_distribution<> dist(0,  parentNode->possibleMoves.size() - 1);
+        Move selectedMove = possibleMoves[dist(gen)];
 
         //set move & make move
         move = selectedMove;
         board = parentBoard;
         board.makeMove(selectedMove);
 
-        //recalculate legal moves after making that move
-        currentLegalMoves.clear();
-        chess::movegen::legalmoves(currentLegalMoves, board);
+        //delete the move we just made --------------------------------------------
+        //this returns itt for the selected move
+        auto itt = std::find(parentNode->possibleMoves.begin(), parentNode->possibleMoves.end(), selectedMove);
+        //remove it from list
+        parentNode->possibleMoves.erase(itt);
 
-        //set initial max children
-        maxChildren = currentLegalMoves.size();
+        //now capture all legal moves after this current move ------------------------------------------------
+
+        //recalculate legal moves after making that move
+        Movelist legalMoves;
+        chess::movegen::legalmoves(legalMoves, board);
 
         //set all possible moves to make
-        possibleMoves = currentLegalMoves;
+        for(Move legalMove : legalMoves){
+            possibleMoves.emplace_back(legalMove);
+        }
+
+        //set initial max children
+        maxChildren = possibleMoves.size();
     }
 
     /*
     * root node
     */
-    Node(Board thisBoard, bool isRootNode){
+    Node(Board& thisBoard, Movelist legalMoves){
+
+        //set all possible moves to make
+        for(Move legalMove : legalMoves){
+            possibleMoves.emplace_back(legalMove);
+        }
+
         maxChildren = possibleMoves.size();
-        possibleMoves = possibleMovesInput; //not 100% sure if this makes a copy.
         board = thisBoard;
     }
 
@@ -67,14 +70,14 @@ public:
 	vector<Node*> children;
 
     //possible moves to play
-    chess::Movelist possibleMoves;
+    vector<Move> possibleMoves;
 
     //uct
 	float UCT = numeric_limits<float>::max();
     float wins = 0; // -1 = loss, +1 win, +0 draw
 
-    int maxChildren = 0;
-    int visits = 1;
+    unsigned int maxChildren = 0;
+    unsigned int visits = 1;
 
     Board board;
     Move move;

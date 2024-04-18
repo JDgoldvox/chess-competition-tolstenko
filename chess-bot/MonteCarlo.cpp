@@ -1,46 +1,54 @@
 #include "MonteCarlo.h"
 
-chess::Move MonteCarlo::Run(Movelist possibleMoves, int simulationsInput, Board board){
-    simulations = simulationsInput;
-    root = new Node(possibleMoves, board);
+chess::Move MonteCarlo::Run(Movelist moveList, int simulationsInput, Board board){
+    totalSimulations = simulationsInput;
+    currentSimulationCount = 0;
 
-    for(auto move : possibleMoves){
-        chess::Board tempBoard = board;
+    //create root
+    root = new Node(board, moveList);
 
-        tempBoard.makeMove(move);
+//    for(auto move : possibleMoves){
+//        chess::Board tempBoard = board;
+//
+//        tempBoard.makeMove(move);
+//
+//        chess::Square currentMove = move.to();
+//
+//        //this is how I see the square
+//        if(currentMove == Square::underlying::SQ_A1){
+//
+//        }
+//
+//        //this is for ranks
+//        if(currentMove.rank() == Rank::RANK_1){
+//
+//        }
+//
+//        tempBoard.isGameOver();
+//
+//        auto piece = board.at(currentMove);
+//
+//        if(piece == chess::PieceType::PAWN){
+//
+//        }
+//
+//    }
 
-        chess::Square currentMove = move.to();
+    while(currentSimulationCount <= totalSimulations){
+        //select
+        Node* selectedNode = Selection(root);
 
-        //this is how I see the square
-        if(currentMove == Square::underlying::SQ_A1){
+        //expand
+        Node* newNode = Expansion(selectedNode);
 
-        }
+        //simulate
+        GameResult result = Simulation(board);
 
-        //this is for ranks
-        if(currentMove.rank() == Rank::RANK_1){
-
-        }
-
-        tempBoard.isGameOver();
-
-        auto piece = board.at(currentMove);
-
-        if(piece == chess::PieceType::PAWN){
-
-        }
-
+        //propagate
+        Propagation(newNode);
     }
 
-    //select
-
-    //expand
-    
-    //simulate
-
-    //propagate
-
-    return possibleMoves[0];
-    //return chess::Move();
+    return moveList[0];
 }
 
 /*

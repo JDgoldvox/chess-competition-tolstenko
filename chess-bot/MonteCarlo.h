@@ -12,7 +12,8 @@ public:
     chess::Move Run(Movelist possibleMoves, int simulationsInput, Board board);
 
 private:
-    int simulations = 0;
+    int totalSimulations = 0;
+    int currentSimulationCount = 0;
     Node* root = nullptr;
 
     Node* Selection(Node* root);
