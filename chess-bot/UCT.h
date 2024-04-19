@@ -20,12 +20,12 @@ static float UCT_CONST = 1.41f;
     static Node* FindBestUCT(vector<Node*>& nodesVec){
 
         Node* bestNode = nullptr;
-        float bestScore = numeric_limits<float>::min();
+        float bestUCT = numeric_limits<float>::min();
 
         for(Node* node : nodesVec){
 
-            if(node->UCT > bestScore){
-                bestScore = node->UCT;
+            if(node->UCT > bestUCT){
+                bestUCT = node->UCT;
                 bestNode = node;
             }
         }

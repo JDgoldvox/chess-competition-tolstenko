@@ -15,17 +15,18 @@ public:
     /*
      * parent board
      */
-    Node(Board parentBoard, Node* parentNode){
+    Node(Node* parentNode){
 
         //choose random move from board legal moves
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dist(0,  parentNode->possibleMoves.size() - 1);
-        Move selectedMove = possibleMoves[dist(gen)];
+        int rng = dist(gen);
+        Move selectedMove = parentNode->possibleMoves[rng]; //not sure whats up with this, but im getting an error here.
 
         //set move & make move
         move = selectedMove;
-        board = parentBoard;
+        board = parentNode->board;
         board.makeMove(selectedMove);
 
         //delete the move we just made --------------------------------------------
@@ -74,7 +75,7 @@ public:
 
     //uct
 	float UCT = numeric_limits<float>::max();
-    float wins = 0; // -1 = loss, +1 win, +0 draw
+    float score = 0; // -1 = loss, +1 win, +0.1 draw
 
     unsigned int maxChildren = 0;
     unsigned int visits = 1;
