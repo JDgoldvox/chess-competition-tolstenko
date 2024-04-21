@@ -6,54 +6,20 @@
 #define CHESS_BOARDSCORE_H
 #include "chess.hpp"
 
+using namespace chess;
+
 class BoardScore {
-    static int Evaluate(chess::Board& board){
+public:
+    static float Evaluate(const chess::Board& board);
 
-        int score = 0;
+private:
+    static float EvaluateBoardScore(const chess::Board& board);
+    static float EvaluateKingSafety(const chess::Board& board);
+    static float EvaluateAttackOpportunity(const chess::Board& board);
+    static float EvaluateCenterActivity(const chess::Board& board);
+    static float EvaluatePawnStructure(const chess::Board& board);
 
-        for(size_t row = 0; row < 8; row++){
-            for(size_t col = 0; col < 8; col++){
-                auto piece = board.at(chess::Square(chess::File(row), chess::Rank(col)));
-                switch(piece.internal()){
-                    //accumulate scores
-                    case chess::Piece::BLACKPAWN:
-                        score -= 1;
-                        break;
-                    case chess::Piece::BLACKKNIGHT:
-                    case chess::Piece::BLACKBISHOP:
-                        score -= 3;
-                        break;
-                    case chess::Piece::BLACKROOK:
-                        score -= 5;
-                        break;
-                    case chess::Piece::BLACKQUEEN:
-                        score -= 9;
-                        break;
-                    case chess::Piece::BLACKKING:
-                        score -= 1000;
-                        break;
-
-                    case chess::Piece::WHITEPAWN:
-                        score += 1;
-                        break;
-                    case chess::Piece::WHITEKNIGHT:
-                    case chess::Piece::WHITEBISHOP:
-                        score += 3;
-                        break;
-                    case chess::Piece::WHITEROOK:
-                        score += 5;
-                        break;
-                    case chess::Piece::WHITEQUEEN:
-                        score += 9;
-                        break;
-                    case chess::Piece::WHITEKING:
-                        score += 1000;
-                        break;
-
-                }
-            }
-        }
-    }
+    static Color ourColor;
 };
 
 

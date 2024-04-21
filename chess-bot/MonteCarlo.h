@@ -3,6 +3,7 @@
 #include "chess.hpp"
 #include "Node.h"
 #include "UCT.h"
+#include "BoardScore.h"
 
 using namespace chess;
 
@@ -13,13 +14,11 @@ public:
     Move ReturnBestMove();
 
     ~MonteCarlo(){
-        for(Node* node : allNodes){
-            delete(node);
-        }
-
-        allNodes.clear();
+        DestroyAllNodes();
     }
 private:
+    void DestroyAllNodes();
+
     int totalSimulations = 0;
     int currentSimulationCount = 0;
     Node* root = nullptr;

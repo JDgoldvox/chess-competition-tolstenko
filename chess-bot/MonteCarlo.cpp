@@ -43,11 +43,13 @@ Move MonteCarlo::Run(Movelist moveList, int simulationsInput, Board board){
     while(currentSimulationCount <= totalSimulations){
         currentSimulationCount++;
 
+        //std::cout << "------------------------------------------------" << std::endl;
+
         //debug
         //print out children for each root node
         int i = 0;
         for(Node* node : root->children){
-            //std::cout << "child[ " << i << " ] has: " << node->children.size() << " children with UCT: " << node->UCT << "\n";
+            //std::cout << "child[ " << i << " ] has: " << node->children.size() << " children with UCT: " << node->UCT << " | Visits: " << node->visits << "\n";
             i++;
         }
 
@@ -74,7 +76,10 @@ Move MonteCarlo::Run(Movelist moveList, int simulationsInput, Board board){
         Propagation(newNode);
     }
 
-    return ReturnBestMove();
+    Move bestMove = ReturnBestMove();
+    DestroyAllNodes();
+
+    return bestMove;
 }
 
 /*
@@ -92,8 +97,7 @@ Node* MonteCarlo::Selection(Node* rootInput) {
 
     //if we have the same number of moves to children (we maxed children out)
     if(rootInput->children.size() != rootInput->maxChildren){
-        //cout << "returning root! root size: " << rootInput->children.size() <<
-             //"||| root max children possible: " << rootInput->maxChildren << std::endl;
+        //cout << "returning root! root size: " << rootInput->children.size() << "||| root max children possible: " << rootInput->maxChildren << std::endl;
         return rootInput;
     }
 
@@ -111,6 +115,10 @@ Node* MonteCarlo::Selection(Node* rootInput) {
 
         //scan all ucts for best node
         current = UCT::FindBestUCT(current->children);
+
+        if(current == nullptr){
+            std::cout << "selection null, idk what to do from here...\n";
+        }
     }
 }
 
@@ -166,6 +174,10 @@ GameResult MonteCarlo::Simulation(Node* simulationNode) {
         //make move
         board.makeMove(selectedMove); //assuming this chances the board
 
+        //evaluate score /////////////////////////////
+        //std::cout << "BOARD SCORE EVAL: " << BoardScore::Evaluate(board) << endl;
+        ////////////////////////////////////////////
+
         //check if win, lose or draw
         auto resultPair = board.isGameOver();
 
@@ -209,20 +221,25 @@ void MonteCarlo::Propagation(Node* newNode) {
             //opposite color is this node //if next was black turn, this means white won
             if(newNode->board.sideToMove() == Color::BLACK && ourColor == Color::WHITE) {
                 pointsToAdd = 1;
+                //cout << "WIN\n";
             }
             else{
                 pointsToAdd = -1;
+                //cout << "LOSS\n";
             }
             break;
         case GameResult::DRAW:
-            pointsToAdd = 0.2;
+            pointsToAdd = 0;
+            //cout << "DRAW\n";
             break;
         case GameResult::LOSE:
             if(newNode->board.sideToMove() == Color::BLACK && ourColor == Color::WHITE) {
                 pointsToAdd = -1;
+                //cout << "LOSS\n";
             }
             else{
                 pointsToAdd = 1;
+                //cout << "WIN\n";
             }
             break;
         case GameResult::NONE:
@@ -252,4 +269,13 @@ Move MonteCarlo::ReturnBestMove(){
 
     Node* bestMoveNode = UCT::FindBestUCT(root->children);
     return bestMoveNode->move;
+}
+
+void MonteCarlo::DestroyAllNodes(){
+    for(Node* node : allNodes){
+        delete(node);
+    }
+
+    allNodes.clear();
+    root = nullptr;
 }
