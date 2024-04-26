@@ -13,10 +13,10 @@ std::string ChessSimulator::Move(std::string fen) {
   // extra points if you create your own board/move representation instead of
   // using the one provided by the library
 
-    std::cout << fen << std::endl;
+    //std::cout << fen << std::endl;
 
   // here goes a random movement
-  chess::Board board(fen);
+  chess::Board board(fen); //fen
   chess::Movelist moves;
   chess::movegen::legalmoves(moves, board);
   if(moves.size() == 0)
@@ -26,13 +26,13 @@ std::string ChessSimulator::Move(std::string fen) {
 
     //start here
 
-    chess::Move nextMove = monteCarlo.Run(moves, 400, board);
+    chess::Move nextMove = monteCarlo.Run(moves, 1000, board);
 
 
   // get random move
 //  std::random_device rd;
 //  std::mt19937 gen(rd());
-//  std::uniform_int_distribution<> dist(0,  moves.size() - 1);
+ //  std::uniform_int_distribution<> dist(0,  moves.size() - 1);
 //  auto move = moves[dist(gen)];
 //  return chess::uci::moveToUci(move);
 

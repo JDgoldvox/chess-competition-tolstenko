@@ -33,12 +33,19 @@ static float UCT_CONST = 1.41f;
     static Node* FindBestUCT(vector<Node*>& nodesVec){
 
         Node* bestNode = nullptr;
-        float bestUCT = numeric_limits<float>::min();
+        float bestUCT = -numeric_limits<float>::max();
 
         for(Node* node : nodesVec){
             if(node->UCT > bestUCT){
                 bestUCT = node->UCT;
                 bestNode = node;
+            }
+        }
+
+        //if this is somehow still null
+        if(bestNode == nullptr){
+            if(nodesVec.size() > 0){
+                bestNode = nodesVec[0];
             }
         }
 

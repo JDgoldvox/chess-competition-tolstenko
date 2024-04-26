@@ -41,7 +41,7 @@ string gameResult;
 vector<string> moves;
 
 void reset(chess::Board &board) {
-  board = chess::Board();
+  board = chess::Board(); //k2q4/pp6/8/8/8/8/PP6/K7 b - - 0 1
   simulationState = SimulationState::PAUSED;
   timeSpentOnMoves = std::chrono::nanoseconds::zero();
   timeSpentLastMove = std::chrono::milliseconds::zero();

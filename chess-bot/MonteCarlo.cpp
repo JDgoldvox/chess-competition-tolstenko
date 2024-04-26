@@ -13,37 +13,8 @@ Move MonteCarlo::Run(Movelist moveList, int simulationsInput, Board board){
     root = new Node(board, moveList);
     allNodes.emplace_back(root);
 
-//    for(auto move : possibleMoves){
-//        chess::Board tempBoard = board;
-//
-//        tempBoard.makeMove(move);
-//
-//        chess::Square currentMove = move.to();
-//
-//        //this is how I see the square
-//        if(currentMove == Square::underlying::SQ_A1){
-//
-//        }
-//
-//        //this is for ranks
-//        if(currentMove.rank() == Rank::RANK_1){
-//
-//        }
-//
-//        tempBoard.isGameOver();
-//
-//        auto piece = board.at(currentMove);
-//
-//        if(piece == chess::PieceType::PAWN){
-//
-//        }
-//
-//    }
-
     while(currentSimulationCount <= totalSimulations){
         currentSimulationCount++;
-
-        //std::cout << "------------------------------------------------" << std::endl;
 
         //debug
         //print out children for each root node
@@ -53,12 +24,15 @@ Move MonteCarlo::Run(Movelist moveList, int simulationsInput, Board board){
             i++;
         }
 
-
-
         //select
         //std::cout << "-------------------------------------------------------------\n";
         //std::cout << "selection stage\n";
         Node* selectedNode = Selection(root);
+
+        //error checking
+        if(selectedNode == nullptr){
+            return moveList[0];
+        }
 
         //expand
        // std::cout << "-------------------------------------------------------------\n";
@@ -103,8 +77,17 @@ Node* MonteCarlo::Selection(Node* rootInput) {
 
     current = UCT::FindBestUCT(rootInput->children);
 
+    if(current == nullptr){
+        return rootInput;
+    }
+
     //this is now not a root node
     while(true){
+
+        //No possible children in this node, idk what to do from here...
+        if(current->maxChildren == 0){
+            return nullptr;
+        }
 
         //node does not have max children
         if(current->children.size() != current->maxChildren){
@@ -117,7 +100,8 @@ Node* MonteCarlo::Selection(Node* rootInput) {
         current = UCT::FindBestUCT(current->children);
 
         if(current == nullptr){
-            std::cout << "selection null, idk what to do from here...\n";
+            //std::cout << "selection null, idk what to do from here...\n";
+            return nullptr;
         }
     }
 }
@@ -175,7 +159,7 @@ GameResult MonteCarlo::Simulation(Node* simulationNode) {
         board.makeMove(selectedMove); //assuming this chances the board
 
         //evaluate score /////////////////////////////
-        //std::cout << "BOARD SCORE EVAL: " << BoardScore::Evaluate(board) << endl;
+        //std::cout << "BOARD SCORE EVAL: " << BoardScore::Evaluate(board) << std::endl;
         ////////////////////////////////////////////
 
         //check if win, lose or draw
@@ -244,7 +228,7 @@ void MonteCarlo::Propagation(Node* newNode) {
             break;
         case GameResult::NONE:
             pointsToAdd -= 100000;
-            std::cout << "some shit went down, and now we are messing up in propagation, this shouldn't be happening\n";
+            //std::cout << "some shit went down, and now we are messing up in propagation, this shouldn't be happening\n";
             break;
     }
 
@@ -256,6 +240,8 @@ void MonteCarlo::Propagation(Node* newNode) {
 
         if(current == newNode){
             //do not change UCT if its a NEW NODE
+            //Evaluate and add this score
+            current->score += BoardScore::Evaluate(current->board);
         }
         else{
             current->UCT = UCT::Calculate(current->score, current->parent->visits, current->visits);

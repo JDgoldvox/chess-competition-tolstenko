@@ -19,8 +19,8 @@ private:
     static float EvaluateCenterActivity(const chess::Board& board);
     static float EvaluatePawnStructure(const chess::Board& board);
 
-    static Color ourColor;
+//    static Color ourColor;
+//    static Color enemyColor;
 };
-
 
 #endif //CHESS_BOARDSCORE_H
