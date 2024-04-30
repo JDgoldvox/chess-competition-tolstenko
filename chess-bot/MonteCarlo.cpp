@@ -237,13 +237,14 @@ void MonteCarlo::Propagation(Node* newNode) {
     while(current->parent != nullptr){
         current->visits += 1;
         current->score += pointsToAdd;
+        current->score += BoardScore::Evaluate(current->board);
 
         if(current == newNode){
             //do not change UCT if its a NEW NODE
-            //Evaluate and add this score
-            current->score += BoardScore::Evaluate(current->board);
         }
         else{
+            //Evaluate and add this score
+            current->score += BoardScore::Evaluate(current->board);
             current->UCT = UCT::Calculate(current->score, current->parent->visits, current->visits);
         }
 
