@@ -28,7 +28,7 @@ private:
     GameResult Simulation(Node* simulationNode);
     void Propagation(Node* newNode);
 
-    int maxSimulationMoves = 90; //max moves
+    int maxSimulationMoves = 140; //max moves
     GameResult lastResult = GameResult::NONE;
     Color ourColor;
 

@@ -26,7 +26,7 @@ std::string ChessSimulator::Move(std::string fen) {
 
     //start here
 
-    chess::Move nextMove = monteCarlo.Run(moves, 300, board);
+    chess::Move nextMove = monteCarlo.Run(moves, 600, board);
 
 
   // get random move
